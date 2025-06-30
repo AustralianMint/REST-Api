@@ -1,4 +1,5 @@
-const express = require('express')
+const Joi = require('joi');
+const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -38,6 +39,14 @@ app.get('/api/spots/:year/:month', (req, res) => {
 //POST REQUESTS:
 
 app.post('/api/spots', (req, res) => {
+  if (!req.body.name || req.body.name.length < 3) {
+    //400 Bad Request
+    res.status(400).send('Name required and should be more than 3 letters.');
+    return;
+  }
+
+
+
   const spot = {
     id: spots.length + 1,
     name: req.body.name
