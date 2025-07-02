@@ -36,16 +36,25 @@ app.get('/api/spots/:year/:month', (req, res) => {
   });
 });
 
+
+
+
+
 //POST REQUESTS:
 
 app.post('/api/spots', (req, res) => {
-  if (!req.body.name || req.body.name.length < 3) {
-    //400 Bad Request
-    res.status(400).send('Name required and should be more than 3 letters.');
+
+  //Input validation
+  const schema = Joi.object({
+    name: Joi.string().min(3).required()
+  });
+
+  const result = schema.validate(req.body);
+
+  if (result.error) {
+    res.status(400).send(result.error.details[0].message);
     return;
-  }
-
-
+  };
 
   const spot = {
     id: spots.length + 1,
@@ -54,6 +63,8 @@ app.post('/api/spots', (req, res) => {
   spots.push(spot);
   res.send(spot);
 });
+
+
 
 
 //Error handling
