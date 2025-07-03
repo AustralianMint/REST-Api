@@ -37,23 +37,15 @@ app.get('/api/spots/:year/:month', (req, res) => {
 });
 
 
-
-
-
 //POST REQUESTS:
 
 app.post('/api/spots', (req, res) => {
 
   //Input validation
-  const schema = Joi.object({
-    name: Joi.string().min(3).required()
-  });
+  const { error } = validateSpot(req.body);
 
-  const result = schema.validate(req.body);
-
-  if (result.error) {
-    res.status(400).send(result.error.details[0].message);
-    return;
+  if (error) {
+    return res.status(400).send(error.details[0].message);
   };
 
   const spot = {
@@ -65,6 +57,31 @@ app.post('/api/spots', (req, res) => {
 });
 
 
+//PUT REQUESTS
+
+app.put('/api/spots/:id', (req, res) => {
+
+  const spot = spots.find(s => s.id === parseInt(req.params.id));
+  if (!spot) res.status(404).send('The spot wiht the given ID was not found.');
+  
+  const { error } = validateSpot(req.body);
+
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }; 
+
+  spot.name = req.body.name;
+  res.send(spot);
+});
+
+
+//Validation function
+function validateSpot(spot) {
+  const schema = Joi.object({
+    name: Joi.string().min(3).required()
+  });
+  return schema.validate(spot);
+}
 
 
 //Error handling
