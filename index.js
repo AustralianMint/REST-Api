@@ -62,7 +62,7 @@ app.post('/api/spots', (req, res) => {
 app.put('/api/spots/:id', (req, res) => {
 
   const spot = spots.find(s => s.id === parseInt(req.params.id));
-  if (!spot) res.status(404).send('The spot wiht the given ID was not found.');
+  if (!spot) res.status(404).send('The spot with the given ID was not found.');
   
   const { error } = validateSpot(req.body);
 
@@ -72,6 +72,20 @@ app.put('/api/spots/:id', (req, res) => {
 
   spot.name = req.body.name;
   res.send(spot);
+});
+
+//DELETE REQUESTS
+
+app.delete('/api/spots/:id', (req, res) => { 
+
+  const spot = spots.find(s => s.id === parseInt(req.params.id));
+  if (!spot) res.status(404).send('The spot with the given ID was not found.');
+
+  const index = spots.indexOf(spot);
+  spots.splice(index, 1);
+  
+  res.send(spot);
+
 });
 
 
