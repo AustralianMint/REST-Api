@@ -24,7 +24,12 @@ app.get('/api/spots', (req, res) => {
 //Spot by ID
 app.get('/api/spots/:id', (req, res) => {
   const spot = spots.find(s => s.id === parseInt(req.params.id));
-  if (!spot) res.status(404).send('The spot with the given ID was not found.');
+
+  if (!spot) {
+    res.status(404).send('The spot with the given ID was not found.');
+    return;
+  };
+
   res.send(spot);
 });
 
@@ -45,7 +50,8 @@ app.post('/api/spots', (req, res) => {
   const { error } = validateSpot(req.body);
 
   if (error) {
-    return res.status(400).send(error.details[0].message);
+    res.status(400).send(error.details[0].message);
+    return;
   };
 
   const spot = {
@@ -62,12 +68,17 @@ app.post('/api/spots', (req, res) => {
 app.put('/api/spots/:id', (req, res) => {
 
   const spot = spots.find(s => s.id === parseInt(req.params.id));
-  if (!spot) res.status(404).send('The spot with the given ID was not found.');
   
+  if (!spot){
+    res.status(404).send('The spot with the given ID was not found.');
+    return;
+  }
+
   const { error } = validateSpot(req.body);
 
   if (error) {
-    return res.status(400).send(error.details[0].message);
+    res.status(400).send(error.details[0].message);
+    return;
   }; 
 
   spot.name = req.body.name;
@@ -79,7 +90,11 @@ app.put('/api/spots/:id', (req, res) => {
 app.delete('/api/spots/:id', (req, res) => { 
 
   const spot = spots.find(s => s.id === parseInt(req.params.id));
-  if (!spot) res.status(404).send('The spot with the given ID was not found.');
+
+  if (!spot) {
+    res.status(404).send('The spot with the given ID was not found.');
+    return;
+  }
 
   const index = spots.indexOf(spot);
   spots.splice(index, 1);
